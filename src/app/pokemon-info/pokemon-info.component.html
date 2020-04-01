@@ -1,0 +1,8 @@
+<div id="container">
+  <div id="name">{{pokemon.name}}</div>
+  <div id="level">Lv. {{pokemon.level}}</div>
+  <div id="hp">HP : {{pokemon.hp}}/{{pokemon.max_hp}}</div>
+  <div id="hp_bar">
+    <div id="remaining_hp" [ngStyle]="{'width.px': pokemon.hp / pokemon.max_hp * 100}">&nbsp;</div>
+  </div>
+</div>

@@ -1,0 +1,27 @@
+#battle_arena {
+  position: relative;
+}
+
+#left_fighter {
+  position: absolute;
+  left: 75px;
+  top: 125px;
+}
+
+#right_fighter {
+  position: absolute;
+  left: 355px;
+  top: 30px;
+}
+
+#left_fighter_info {
+  position: absolute;
+  left: 330px;
+  top: 178px;
+}
+
+#right_fighter_info {
+  position: absolute;
+  left: 42px;
+  top: 45px;
+}
