@@ -38,4 +38,8 @@ export class BattleComponent implements OnInit {
     this.battleService.initialize(this.battle);
   }
 
+  ngOnDestroy(): void {
+    //TODO: clearinterval
+  }
+
 }

@@ -11,9 +11,11 @@ export class Battle {
   isFinished: boolean;
   turnOrder = new TurnOrder();
   firstAttacker: Pokemon | undefined;
+  isBeginning: boolean;
 
   constructor(fighters: Pokemon[]) {
     this.fighters = fighters;
-    this.actions = []
+    this.actions = [];
+    this.isBeginning = true;
   }
 }

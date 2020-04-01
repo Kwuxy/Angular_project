@@ -7,6 +7,7 @@ import {PokemonInfoComponent} from "./pokemon-info/pokemon-info.component";
 import {LogColorDirective} from "./battle/log-color.directive";
 import {HpBarComponent} from "./hp-bar/hp-bar.component";
 import {BattleArenaComponent} from "./battle-arena/battle-arena.component";
+import {DatePipe, DecimalPipe} from "@angular/common";
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -20,7 +21,8 @@ describe('AppComponent', () => {
         LogColorDirective,
         HpBarComponent,
         BattleArenaComponent
-      ]
+      ],
+      providers: [ DatePipe, DecimalPipe ]
     }).compileComponents();
   }));
 

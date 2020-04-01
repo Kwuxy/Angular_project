@@ -3,14 +3,19 @@ import {Pokemon} from "../pokemon/pokemon";
 import {Log} from "./log";
 import {Battle} from "./battle";
 import {PokemonService} from "../pokemon/pokemon.service";
+import {DatePipe, DecimalPipe} from "@angular/common";
 
 @Injectable({
   providedIn: 'root'
 })
 export class BattleService {
-  constructor(private pokemonService: PokemonService) { }
+  constructor(private pokemonService: PokemonService, private datePipe: DatePipe, private decimalPipe: DecimalPipe) { }
 
-  playMatch(battle: Battle): Promise<Pokemon> {
+  playMatch(battle: Battle, date: Date = new Date()): Promise<Pokemon> {
+    if(battle.isBeginning) {
+      battle.actions.push(new Log(`The match begins at ${this.datePipe.transform(date, 'medium')}`));
+    }
+
     return new Promise(resolve => {
       battle.intervalId = setInterval(() => {
         this.playRound(battle);
@@ -30,15 +35,17 @@ export class BattleService {
     if (battle.firstAttacker === undefined) {
       battle.firstAttacker = battle.turnOrder.turn_order(battle.fighters[0], battle.fighters[1]);
       const secondPlayer = battle.fighters.filter(pokemon => pokemon !== battle.firstAttacker)[0];
-      this.pokemonService.attack(battle.firstAttacker.moves[0], secondPlayer);
-      battle.actions.push(new Log(`${battle.firstAttacker.name} throw move ${battle.firstAttacker.moves[0].name} on ${secondPlayer.name}`, battle.firstAttacker.color));
+      let damages = this.pokemonService.attack(battle.firstAttacker.moves[0], secondPlayer);
+      battle.actions.push(new Log(`${battle.firstAttacker.name} throw move ${battle.firstAttacker.moves[0].name}
+      on ${secondPlayer.name} and deals ${this.decimalPipe.transform(damages, '1.1')} HP damages.`, battle.firstAttacker.color));
       if (!this.pokemonIsAlive(secondPlayer)) {
         return;
       }
     } else {
       const secondPlayer = battle.fighters.filter(pokemon => pokemon !== battle.firstAttacker)[0];
-      this.pokemonService.attack(secondPlayer.moves[0], battle.firstAttacker);
-      battle.actions.push(new Log(`${secondPlayer.name} throw move ${secondPlayer.moves[0].name} on ${battle.firstAttacker.name}`, secondPlayer.color));
+      let damages = this.pokemonService.attack(secondPlayer.moves[0], battle.firstAttacker);
+      battle.actions.push(new Log(`${secondPlayer.name} throw move ${secondPlayer.moves[0].name}
+       on ${battle.firstAttacker.name} and deals ${this.decimalPipe.transform(damages, '1.1')} HP damages.`, secondPlayer.color));
       battle.firstAttacker = undefined;
     }
   }
@@ -58,6 +65,7 @@ export class BattleService {
       this.playMatch(battle);
     }
 
+    battle.isBeginning = false;
     battle.isPaused = !battle.isPaused;
   }
 

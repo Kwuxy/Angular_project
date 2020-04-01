@@ -11,6 +11,7 @@ import { BattleArenaComponent } from './battle-arena/battle-arena.component';
 import { HpBarComponent } from './hp-bar/hp-bar.component';
 import {PokemonService} from "./pokemon/pokemon.service";
 import {BattleService} from "./battle/battle.service";
+import {DatePipe, DecimalPipe} from "@angular/common";
 
 @NgModule({
   declarations: [
@@ -28,7 +29,9 @@ import {BattleService} from "./battle/battle.service";
   ],
   providers: [
     PokemonService,
-    BattleService
+    BattleService,
+    DatePipe,
+    DecimalPipe
   ],
   bootstrap: [AppComponent]
 })

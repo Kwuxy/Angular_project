@@ -10,6 +10,7 @@ import {BattleArenaComponent} from "../battle-arena/battle-arena.component";
 import {PokemonService} from "../pokemon/pokemon.service";
 import {Battle} from "./battle";
 import {Pokemon} from "../pokemon/pokemon";
+import {DatePipe, DecimalPipe} from "@angular/common";
 
 describe('BattleService', () => {
   let pokemonService: PokemonService;
@@ -28,7 +29,8 @@ describe('BattleService', () => {
         LogColorDirective,
         HpBarComponent,
         BattleArenaComponent
-      ]
+      ],
+      providers: [ DatePipe, DecimalPipe ]
     }).compileComponents();
   }));
 
@@ -80,4 +82,10 @@ describe('BattleService', () => {
     milobellus.hp = 9999;
     battleService.playMatch(battle).then(pokemon => expect(pokemon).toBe(milobellus));
   });
+
+  // it('should render date as medium with pipe', () => {
+  //   const date: Date = new Date(2020, 4, 1, 20, 12, 30);
+  //   battleService.playMatch(battle).then(result => expect(battle.actions[0]).toEqual("The match begins atfzefezfez2, 2020, 20:12:30 PM"));
+  // });
+
 });

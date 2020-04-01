@@ -11,6 +11,7 @@ import {HpBarComponent} from "../hp-bar/hp-bar.component";
 import {BattleArenaComponent} from "../battle-arena/battle-arena.component";
 import {PokemonService} from "../pokemon/pokemon.service";
 import {BattleService} from "./battle.service";
+import {DatePipe, DecimalPipe} from "@angular/common";
 
 describe('BattleComponent', () => {
   let battleComponent: BattleComponent;
@@ -31,6 +32,9 @@ describe('BattleComponent', () => {
         LogColorDirective,
         HpBarComponent,
         BattleArenaComponent
+      ],
+      providers: [
+        DatePipe, DecimalPipe
       ]
     })
     .compileComponents();

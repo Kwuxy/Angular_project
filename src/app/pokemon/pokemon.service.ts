@@ -41,8 +41,10 @@ export class PokemonService {
     return new Pokemon(name, color, speed, offensive, defensive, hp, moves, sprite);
   }
 
-  attack(move: Move, target: Pokemon) {
-    target.hp = target.hp - move.power;
+  attack(move: Move, target: Pokemon): number {
+    let damages = move.power;
+    target.hp = target.hp - damages;
     if (target.hp < 0) { target.hp = 0; }
+    return damages;
   }
 }
