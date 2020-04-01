@@ -20,18 +20,6 @@
 
 #hp_bar {
   position: absolute;
-  top: 24px;
+  top: 25px;
   left: 90px;
-  border: 1px solid black;
-  border-radius: 10px;
-  width: 100px;
-  height: 15px;
-  background-color: grey;
-}
-
-#remaining_hp {
-  height: 15px;
-  background-color: green;
-  border: 0 solid black;
-  border-radius: 10px;
 }

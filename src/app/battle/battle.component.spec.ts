@@ -5,11 +5,19 @@ import {AppComponent} from "../app.component";
 import {PokemonComponent} from "../pokemon/pokemon.component";
 import {MoveComponent} from "../move/move.component";
 import {Pokemon} from "../pokemon/pokemon";
+import {PokemonInfoComponent} from "../pokemon-info/pokemon-info.component";
+import {LogColorDirective} from "./log-color.directive";
+import {HpBarComponent} from "../hp-bar/hp-bar.component";
+import {BattleArenaComponent} from "../battle-arena/battle-arena.component";
+import {PokemonService} from "../pokemon/pokemon.service";
+import {BattleService} from "./battle.service";
 
 describe('BattleComponent', () => {
-  let battle: BattleComponent;
+  let battleComponent: BattleComponent;
   let fixture: ComponentFixture<BattleComponent>;
   let view: any;
+  let pokemonService: PokemonService;
+  let battleService: BattleService;
 
   let milobellus: Pokemon;
   let gardevoir: Pokemon;
@@ -17,67 +25,39 @@ describe('BattleComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        AppComponent,
         PokemonComponent,
+        PokemonInfoComponent,
         BattleComponent,
-        MoveComponent
+        LogColorDirective,
+        HpBarComponent,
+        BattleArenaComponent
       ]
     })
     .compileComponents();
+
+    pokemonService = TestBed.inject(PokemonService);
+    battleService = TestBed.inject(BattleService);
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(BattleComponent);
-    battle = fixture.componentInstance;
+    battleComponent = fixture.componentInstance;
     view = fixture.nativeElement;
     fixture.detectChanges();
   });
 
   beforeEach(() => {
-    milobellus = Pokemon.createPokemonByName('Milobellus');
-    gardevoir = Pokemon.createPokemonByName('Gardevoir');
-    battle.fighters = [milobellus, gardevoir];
+    milobellus = pokemonService.createPokemonByName('Milobellus');
+    gardevoir = pokemonService.createPokemonByName('Gardevoir');
+    battleComponent.fighters = [milobellus, gardevoir];
   });
 
   it('should create', () => {
-    expect(battle).toBeTruthy();
-  });
-
-  test('Should return pokemon is alive', () => {
-    expect(battle.pokemonIsAlive(milobellus)).toBe(true);
-  });
-
-  test('Should return pokemon is not alive', () => {
-    milobellus.hp = 0;
-    expect(battle.pokemonIsAlive(milobellus)).toBe(false);
-  });
-
-  test('Should return all pokemons are alive', () => {
-    expect(battle.allPokemonsAreAlive()).toBe(true);
-  });
-
-  test('Should return all pokemons are alive when a pokemon has 0 hp', () => {
-    milobellus.hp = 0;
-    expect(battle.allPokemonsAreAlive()).toBe(false);
-  });
-
-  test('Should return all pokemons are alive when both pokemons have 0 hp', () => {
-    milobellus.hp = 0;
-    gardevoir.hp = 0;
-    expect(battle.allPokemonsAreAlive()).toBe(false);
-  });
-
-  test('gardevoir should win', () => {
-    battle.playMatch().then(pokemon => expect(pokemon).toBe(gardevoir));
-  });
-
-  test('milobellus should win when it get drugs', () => {
-    milobellus.hp = 9999;
-    battle.playMatch().then(pokemon => expect(pokemon).toBe(milobellus));
+    expect(battleComponent).toBeTruthy();
   });
 
   it('should grey out pause button when finished', () => {
-    battle.isFinished = true;
+    battleComponent.battle.isFinished = true;
     fixture.detectChanges();
     expect(view.querySelector('#play_pause_button').disabled).toBe(true);
   });
@@ -91,14 +71,14 @@ describe('BattleComponent', () => {
   it('Pause props content should be false when click on play', () => {
     view.querySelector('#play_pause_button').click();
     fixture.detectChanges();
-    expect(battle.isPaused).toBe(false);
+    expect(battleComponent.battle.isPaused).toBe(false);
   });
 
   it('should reset HP when resetting game', () => {
-    let initialHP = battle.fighters.filter(pokemon => pokemon.name === "Milobellus")[0].hp;
-    battle.fighters.filter(pokemon => pokemon.name === "Milobellus")[0].hp = 0;
+    let initialHP = battleComponent.fighters.filter(pokemon => pokemon.name === "Milobellus")[0].hp;
+    battleComponent.fighters.filter(pokemon => pokemon.name === "Milobellus")[0].hp = 0;
     view.querySelector('#reset_button').click();
     fixture.detectChanges();
-    expect(battle.fighters.filter(pokemon => pokemon.name === "Milobellus")[0].hp).toBe(initialHP);
+    expect(battleComponent.fighters.filter(pokemon => pokemon.name === "Milobellus")[0].hp).toBe(initialHP);
   });
 });

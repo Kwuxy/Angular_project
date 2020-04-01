@@ -1,46 +1,45 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PokemonComponent } from './pokemon.component';
-import {Pokemon} from './pokemon';
 import {AppComponent} from "../app.component";
 import {BattleComponent} from "../battle/battle.component";
 import {MoveComponent} from "../move/move.component";
+import {LogColorDirective} from "../battle/log-color.directive";
+import {PokemonInfoComponent} from "../pokemon-info/pokemon-info.component";
+import {HpBarComponent} from "../hp-bar/hp-bar.component";
+import {BattleArenaComponent} from "../battle-arena/battle-arena.component";
+import {PokemonService} from "./pokemon.service";
 
 describe('PokemonComponent', () => {
   let component: PokemonComponent;
   let fixture: ComponentFixture<PokemonComponent>;
-  let view: any;
+  let service: PokemonService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
         AppComponent,
         PokemonComponent,
+        PokemonInfoComponent,
         BattleComponent,
-        MoveComponent
+        MoveComponent,
+        LogColorDirective,
+        HpBarComponent,
+        BattleArenaComponent
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(PokemonComponent);
+    service = TestBed.inject(PokemonService);
     component = fixture.componentInstance;
-    view = fixture.nativeElement;
-    component.pokemon = Pokemon.createPokemonByName('Gardevoir');
-    component.pokemon.hp = 100;
+    component.pokemon = service.createPokemonByName('Gardevoir');
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should display name', () => {
-    expect(view.textContent).toContain('Gardevoir');
-  });
-
-  it('should display hp', () => {
-    expect(view.textContent).toContain(100);
   });
 });

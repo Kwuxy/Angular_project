@@ -1,0 +1,14 @@
+#container {
+  border: 1px solid black;
+  border-radius: 10px;
+  width: 100px;
+  height: 10px;
+  background-color: #5c5c5c;
+}
+
+#remaining_hp {
+  height: 10px;
+  background-color: limegreen;
+  border: 0 solid black;
+  border-radius: 10px;
+}

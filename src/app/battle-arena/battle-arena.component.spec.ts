@@ -1,17 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MoveComponent } from './move.component';
+import { BattleArenaComponent } from './battle-arena.component';
 import {AppComponent} from "../app.component";
 import {PokemonComponent} from "../pokemon/pokemon.component";
 import {PokemonInfoComponent} from "../pokemon-info/pokemon-info.component";
 import {BattleComponent} from "../battle/battle.component";
+import {MoveComponent} from "../move/move.component";
 import {LogColorDirective} from "../battle/log-color.directive";
 import {HpBarComponent} from "../hp-bar/hp-bar.component";
-import {BattleArenaComponent} from "../battle-arena/battle-arena.component";
+import {Pokemon} from "../pokemon/pokemon";
+import {PokemonService} from "../pokemon/pokemon.service";
 
-describe('MoveComponent', () => {
-  let component: MoveComponent;
-  let fixture: ComponentFixture<MoveComponent>;
+describe('BattleArenaComponent', () => {
+  let component: BattleArenaComponent;
+  let fixture: ComponentFixture<BattleArenaComponent>;
+  let service: PokemonService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -23,14 +26,20 @@ describe('MoveComponent', () => {
         MoveComponent,
         LogColorDirective,
         HpBarComponent,
-        BattleArenaComponent,]
+        BattleArenaComponent
+      ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MoveComponent);
+    service = TestBed.inject(PokemonService);
+    fixture = TestBed.createComponent(BattleArenaComponent);
     component = fixture.componentInstance;
+    component.fighters = [
+      service.createPokemonByName('Gardevoir'),
+      service.createPokemonByName('Milobellus')
+    ];
     fixture.detectChanges();
   });
 

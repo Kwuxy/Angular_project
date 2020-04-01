@@ -1,15 +1,9 @@
 <p>FIGHT !</p>
-<button id="play_pause_button" [disabled]="isFinished" (click)="togglePause()">{{isPaused ? 'Play' : 'Pause'}}</button>
-<button id="reset_button" (click)="ngOnInit()">Reset</button>
-<div id="battle_arena">
-  <img src="../../assets/battlescreen_withoutactionzone_samebubblesize.png" id="battle_screen">
-  <app-pokemon [pokemon]="fighters[0]" id="left_fighter"></app-pokemon>
-  <app-pokemon-info [pokemon]="fighters[0]" id="left_fighter_info"></app-pokemon-info>
-  <app-pokemon [pokemon]="fighters[1]" id="right_fighter"></app-pokemon>
-  <app-pokemon-info [pokemon]="fighters[1]" id="right_fighter_info"></app-pokemon-info>
-</div>
+<button id="play_pause_button" [disabled]="battle.isFinished" (click)="togglePause()">{{battle.isPaused ? 'Play' : 'Pause'}}</button>
+<button id="reset_button" (click)="initialize()">Reset</button>
+<app-battle-arena [fighters]="battle.fighters"></app-battle-arena>
 <table border="3" style="border-radius: 10px; padding: 5px; border-color: black; width: 556px;">
-  <div *ngFor="let action of actions">
+  <div *ngFor="let action of battle.actions">
     <tr appLogColor color="{{action.color}}">{{action.content}}</tr>
   </div>
 </table>

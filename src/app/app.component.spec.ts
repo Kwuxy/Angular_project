@@ -3,6 +3,10 @@ import { AppComponent } from './app.component';
 import {BattleComponent} from './battle/battle.component';
 import {PokemonComponent} from './pokemon/pokemon.component';
 import {MoveComponent} from "./move/move.component";
+import {PokemonInfoComponent} from "./pokemon-info/pokemon-info.component";
+import {LogColorDirective} from "./battle/log-color.directive";
+import {HpBarComponent} from "./hp-bar/hp-bar.component";
+import {BattleArenaComponent} from "./battle-arena/battle-arena.component";
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -10,8 +14,12 @@ describe('AppComponent', () => {
       declarations: [
         AppComponent,
         PokemonComponent,
+        PokemonInfoComponent,
         BattleComponent,
-        MoveComponent
+        MoveComponent,
+        LogColorDirective,
+        HpBarComponent,
+        BattleArenaComponent
       ]
     }).compileComponents();
   }));
