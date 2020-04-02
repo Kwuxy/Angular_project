@@ -48,6 +48,8 @@ export class BattleComponent implements OnInit {
   initialize() {
     // TODO: à injecter plus tard
     this.fighters = [
+      // this.pokemonProvider('milotic'),
+      // this.pokemonProvider('gardevoir')
       this.pokemonService.getPokemonFromPokeApi('milotic'),
       this.pokemonService.getPokemonFromPokeApi('gardevoir')
     ];
@@ -57,8 +59,9 @@ export class BattleComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    //TODO: clearinterval
-    this.subscriber.unsubscribe();
+    if (this.subscriber) {
+      this.subscriber.unsubscribe();
+    }
   }
 
 }

@@ -10,35 +10,36 @@ import {LogColorDirective} from "../battle/log-color.directive";
 import {HpBarComponent} from "../hp-bar/hp-bar.component";
 import {Pokemon} from "../pokemon/pokemon";
 import {PokemonService} from "../pokemon/pokemon.service";
+import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing";
 
 describe('BattleArenaComponent', () => {
   let component: BattleArenaComponent;
   let fixture: ComponentFixture<BattleArenaComponent>;
   let service: PokemonService;
+  let http: HttpTestingController;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        AppComponent,
-        PokemonComponent,
-        PokemonInfoComponent,
-        BattleComponent,
-        MoveComponent,
-        LogColorDirective,
-        HpBarComponent,
-        BattleArenaComponent
-      ]
-    })
-    .compileComponents();
-  }));
+  beforeEach(async(() => TestBed.configureTestingModule({
+    declarations: [
+      AppComponent,
+      PokemonComponent,
+      PokemonInfoComponent,
+      BattleComponent,
+      MoveComponent,
+      LogColorDirective,
+      HpBarComponent,
+      BattleArenaComponent
+    ],
+    imports: [HttpClientTestingModule]
+  })));
 
   beforeEach(() => {
     service = TestBed.inject(PokemonService);
+    http = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(BattleArenaComponent);
     component = fixture.componentInstance;
     component.fighters = [
-      service.createPokemonByName('Gardevoir'),
-      service.createPokemonByName('Milobellus')
+      service.createPokemonByName('gardevoir'),
+      service.createPokemonByName('milotic')
     ];
     fixture.detectChanges();
   });

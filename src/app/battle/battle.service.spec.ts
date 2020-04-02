@@ -11,38 +11,40 @@ import {PokemonService} from "../pokemon/pokemon.service";
 import {Battle} from "./battle";
 import {Pokemon} from "../pokemon/pokemon";
 import {DatePipe, DecimalPipe} from "@angular/common";
+import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing";
+import {Test} from "tslint";
 
 describe('BattleService', () => {
   let pokemonService: PokemonService;
   let battleService: BattleService;
+  let http: HttpTestingController;
   let battle: Battle;
 
   let milobellus: Pokemon;
   let gardevoir: Pokemon;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        PokemonComponent,
-        PokemonInfoComponent,
-        BattleComponent,
-        LogColorDirective,
-        HpBarComponent,
-        BattleArenaComponent
-      ],
-      providers: [ DatePipe, DecimalPipe ]
-    }).compileComponents();
-  }));
+  beforeEach(async(() => TestBed.configureTestingModule({
+    declarations: [
+      PokemonComponent,
+      PokemonInfoComponent,
+      BattleComponent,
+      LogColorDirective,
+      HpBarComponent,
+      BattleArenaComponent
+    ],
+    imports: [HttpClientTestingModule],
+    providers: [ DatePipe, DecimalPipe ]
+  })));
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
     pokemonService = TestBed.inject(PokemonService);
     battleService = TestBed.inject(BattleService);
+    http = TestBed.inject(HttpTestingController);
   });
 
   beforeEach(() => {
-    milobellus = pokemonService.createPokemonByName('Milobellus');
-    gardevoir = pokemonService.createPokemonByName('Gardevoir');
+    milobellus = pokemonService.createPokemonByName('milotic');
+    gardevoir = pokemonService.createPokemonByName('gardevoir');
     battle = new Battle([milobellus, gardevoir]);
   });
 
@@ -74,13 +76,29 @@ describe('BattleService', () => {
     expect(battleService.allPokemonsAreAlive(battle.fighters)).toBe(false);
   });
 
-  it('gardevoir should win', () => {
-    battleService.playMatch(battle).then(pokemon => expect(pokemon).toBe(gardevoir));
+  it('gardevoir should win', (done) => {
+    battleService.roundInterval = 10;
+    let winner: Pokemon;
+    battleService.playMatch(battle).subscribe(
+      (res) => { if (res) { winner = res }},
+      (err) => console.log(err),
+      () => {
+      expect(winner).toBe(gardevoir);
+      done();
+    });
   });
 
-  it('milobellus should win when it get drugs', () => {
+  it('milobellus should win when it get drugs', (done) => {
     milobellus.hp = 9999;
-    battleService.playMatch(battle).then(pokemon => expect(pokemon).toBe(milobellus));
+    battleService.roundInterval = 10;
+    let winner: Pokemon;
+    battleService.playMatch(battle).subscribe(
+      (res) => { if (res) { winner = res }},
+      (err) => console.log(err),
+      () => {
+        expect(winner).toBe(milobellus);
+        done();
+      });
   });
 
   // it('should render date as medium with pipe', () => {

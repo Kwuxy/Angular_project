@@ -5,20 +5,22 @@ import {Battle} from "./battle";
 import {PokemonService} from "../pokemon/pokemon.service";
 import {DatePipe, DecimalPipe} from "@angular/common";
 import {interval, Observable} from "rxjs";
-import {map, takeWhile} from "rxjs/operators";
+import {map, retry, takeWhile} from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
 })
 export class BattleService {
+  roundInterval: number = 1000;
+
   constructor(private pokemonService: PokemonService, private datePipe: DatePipe, private decimalPipe: DecimalPipe) { }
 
-  playMatch(battle: Battle, date: Date = new Date()): Observable<any> {
+  playMatch(battle: Battle, date: Date = new Date()): Observable<Pokemon> {
     if(battle.isBeginning) {
       battle.actions.push(new Log(`The match begins at ${this.datePipe.transform(date, 'medium')}`));
     }
 
-    return interval(1000)
+    return interval(this.roundInterval)
       .pipe(
         takeWhile(() => !battle.isFinished),
         map(() => {
@@ -27,6 +29,7 @@ export class BattleService {
           battle.isFinished = true;
           const fighterKO = battle.fighters.filter(pokemon => !this.pokemonIsAlive(pokemon))[0];
           battle.actions.push(new Log(`${fighterKO.name} is out of combat.`, 'red'));
+          return battle.fighters.filter(pokemon => this.pokemonIsAlive(pokemon))[0];
         }
       }));
   }
@@ -36,7 +39,7 @@ export class BattleService {
 
       battle.firstAttacker = battle.turnOrder.turn_order(battle.fighters[0], battle.fighters[1]);
       const secondPlayer = battle.fighters.filter(pokemon => pokemon !== battle.firstAttacker)[0];
-      let move = battle.firstAttacker.moves[battle.turnOrder.getRandomInt(4)];
+      let move = battle.firstAttacker.moves[battle.turnOrder.getRandomInt(battle.firstAttacker.moves.length)];
       let damages = this.pokemonService.attack(move, secondPlayer);
       battle.actions.push(new Log(`${battle.firstAttacker.name} throw move ${move.name}
       on ${secondPlayer.name} and deals ${this.decimalPipe.transform(damages, '1.1')} HP damages. ${battle.firstAttacker.cheated ? '(Cheater :-) )' : ''}`, battle.firstAttacker.color));
@@ -45,7 +48,7 @@ export class BattleService {
       }
     } else {
       const secondPlayer = battle.fighters.filter(pokemon => pokemon !== battle.firstAttacker)[0];
-      let move = secondPlayer.moves[battle.turnOrder.getRandomInt(4)];
+      let move = secondPlayer.moves[battle.turnOrder.getRandomInt(secondPlayer.moves.length)];
       let damages = this.pokemonService.attack(move, battle.firstAttacker);
       battle.actions.push(new Log(`${secondPlayer.name} throw move ${move.name}
        on ${battle.firstAttacker.name} and deals ${this.decimalPipe.transform(damages, '1.1')} HP damages. ${secondPlayer.cheated ? '(Cheater :-) )' : ''}`, secondPlayer.color));
