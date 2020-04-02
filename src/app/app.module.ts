@@ -12,6 +12,7 @@ import { HpBarComponent } from './hp-bar/hp-bar.component';
 import {PokemonService} from "./pokemon/pokemon.service";
 import {BattleService} from "./battle/battle.service";
 import {DatePipe, DecimalPipe} from "@angular/common";
+import {HttpClientModule} from "@angular/common/http";
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import {DatePipe, DecimalPipe} from "@angular/common";
     HpBarComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    HttpClientModule
   ],
   providers: [
     PokemonService,

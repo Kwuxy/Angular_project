@@ -4,6 +4,8 @@ import {Log} from "./log";
 import {Battle} from "./battle";
 import {PokemonService} from "../pokemon/pokemon.service";
 import {DatePipe, DecimalPipe} from "@angular/common";
+import {interval, Observable} from "rxjs";
+import {map, takeWhile} from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
@@ -11,42 +13,53 @@ import {DatePipe, DecimalPipe} from "@angular/common";
 export class BattleService {
   constructor(private pokemonService: PokemonService, private datePipe: DatePipe, private decimalPipe: DecimalPipe) { }
 
-  playMatch(battle: Battle, date: Date = new Date()): Promise<Pokemon> {
+  playMatch(battle: Battle, date: Date = new Date()): Observable<any> {
     if(battle.isBeginning) {
       battle.actions.push(new Log(`The match begins at ${this.datePipe.transform(date, 'medium')}`));
     }
 
-    return new Promise(resolve => {
-      battle.intervalId = setInterval(() => {
+    return interval(1000)
+      .pipe(
+        takeWhile(() => !battle.isFinished),
+        map(() => {
         this.playRound(battle);
         if (!this.allPokemonsAreAlive(battle.fighters)) {
-          clearInterval(battle.intervalId);
           battle.isFinished = true;
           const fighterKO = battle.fighters.filter(pokemon => !this.pokemonIsAlive(pokemon))[0];
           battle.actions.push(new Log(`${fighterKO.name} is out of combat.`, 'red'));
-
-          resolve(battle.fighters.filter(pokemon => this.pokemonIsAlive(pokemon))[0]);
         }
-      }, 1000);
-    });
+      }));
   }
 
   playRound(battle: Battle) {
     if (battle.firstAttacker === undefined) {
+
       battle.firstAttacker = battle.turnOrder.turn_order(battle.fighters[0], battle.fighters[1]);
       const secondPlayer = battle.fighters.filter(pokemon => pokemon !== battle.firstAttacker)[0];
-      let damages = this.pokemonService.attack(battle.firstAttacker.moves[0], secondPlayer);
-      battle.actions.push(new Log(`${battle.firstAttacker.name} throw move ${battle.firstAttacker.moves[0].name}
-      on ${secondPlayer.name} and deals ${this.decimalPipe.transform(damages, '1.1')} HP damages.`, battle.firstAttacker.color));
+      let move = battle.firstAttacker.moves[battle.turnOrder.getRandomInt(4)];
+      let damages = this.pokemonService.attack(move, secondPlayer);
+      battle.actions.push(new Log(`${battle.firstAttacker.name} throw move ${move.name}
+      on ${secondPlayer.name} and deals ${this.decimalPipe.transform(damages, '1.1')} HP damages. ${battle.firstAttacker.cheated ? '(Cheater :-) )' : ''}`, battle.firstAttacker.color));
       if (!this.pokemonIsAlive(secondPlayer)) {
         return;
       }
     } else {
       const secondPlayer = battle.fighters.filter(pokemon => pokemon !== battle.firstAttacker)[0];
-      let damages = this.pokemonService.attack(secondPlayer.moves[0], battle.firstAttacker);
-      battle.actions.push(new Log(`${secondPlayer.name} throw move ${secondPlayer.moves[0].name}
-       on ${battle.firstAttacker.name} and deals ${this.decimalPipe.transform(damages, '1.1')} HP damages.`, secondPlayer.color));
+      let move = secondPlayer.moves[battle.turnOrder.getRandomInt(4)];
+      let damages = this.pokemonService.attack(move, battle.firstAttacker);
+      battle.actions.push(new Log(`${secondPlayer.name} throw move ${move.name}
+       on ${battle.firstAttacker.name} and deals ${this.decimalPipe.transform(damages, '1.1')} HP damages. ${secondPlayer.cheated ? '(Cheater :-) )' : ''}`, secondPlayer.color));
+
+      this.resetPokemonCheat(battle.firstAttacker);
+      this.resetPokemonCheat(secondPlayer);
       battle.firstAttacker = undefined;
+    }
+  }
+
+  resetPokemonCheat(pokemon: Pokemon) {
+    if (pokemon.cheated) {
+      pokemon.cheater = false;
+      pokemon.cheated = false;
     }
   }
 
@@ -58,17 +71,6 @@ export class BattleService {
     return pokemon.hp > 0;
   }
 
-  togglePause(battle: Battle) {
-    if (!battle.isPaused) {
-      clearInterval(battle.intervalId);
-    } else {
-      this.playMatch(battle);
-    }
-
-    battle.isBeginning = false;
-    battle.isPaused = !battle.isPaused;
-  }
-
   initialize(battle: Battle) {
     if (battle.isPaused !== undefined && !battle.isPaused) {
       clearInterval(battle.intervalId);
@@ -76,5 +78,10 @@ export class BattleService {
     battle.isPaused = true;
     battle.isFinished = false;
     battle.actions = [];
+  }
+
+  togglePause(battle: Battle) {
+    battle.isBeginning = false;
+    battle.isPaused = !battle.isPaused;
   }
 }

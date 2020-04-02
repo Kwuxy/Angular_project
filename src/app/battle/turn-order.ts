@@ -9,10 +9,12 @@ export class TurnOrder {
 
   static xor_cheater(p1: Pokemon, p2: Pokemon): Pokemon | null {
     if (p1.cheater && !p2.cheater) {
+      p1.cheated = true;
       return p1;
     }
 
     if (p2.cheater && !p1.cheater) {
+      p2.cheated = true;
       return p2;
     }
 
@@ -25,6 +27,7 @@ export class TurnOrder {
 
   turn_order(p1: Pokemon, p2: Pokemon): Pokemon {
     const cheater = TurnOrder.xor_cheater(p1, p2);
+
     if (cheater !== null) { return cheater; }
 
     if (p1.speed === p2.speed) {
