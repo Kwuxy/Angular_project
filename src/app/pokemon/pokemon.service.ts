@@ -5,7 +5,7 @@ import {HttpClient} from "@angular/common/http";
 import {IPokeAPIMoveUrl, IPokeAPIPokemon} from "./pokeapi/IPokeAPIPokemon";
 import {IPokeAPIMove} from "./pokeapi/IPokeAPIMove";
 import {map, mergeMap} from "rxjs/operators";
-import {forkJoin} from "rxjs";
+import {forkJoin, Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -51,27 +51,10 @@ export class PokemonService {
     this.http.get<IPokeAPIPokemon>(`https://pokeapi.co/api/v2/pokemon/${name}/`)
       .pipe(
         mergeMap((rawPokemon: IPokeAPIPokemon) => {
-          pokemon.level = 100;
-          pokemon.speed = this.calculateStat(pokemon, rawPokemon.stats.filter(stat => stat.stat.name === "speed")[0].base_stat);
-          this.setHP(pokemon, rawPokemon.stats.filter(stat => stat.stat.name === "hp")[0].base_stat);
-          pokemon.max_hp = pokemon.hp;
-          pokemon.sprites.front = rawPokemon.sprites.front_default;
-          pokemon.sprites.back = rawPokemon.sprites.back_default;
-
-          let move_calls = [];
-          for (let move of rawPokemon.moves) {
-            move_calls.push(this.http.get<IPokeAPIMoveUrl>(move.move.url));
-          }
-
-          return forkJoin(move_calls);
+          this.mapRawPokemon(rawPokemon, pokemon);
+          return this.getPokeAPIMoves(rawPokemon);
         }),
-        map((rawMoves: IPokeAPIMove[]) => {
-          rawMoves.filter((move) => move.power !== null)
-            .sort(() => Math.random() - 0.5)
-            .map((move) => {
-            pokemon.moves.push(new Move(move.name, move.power))
-          });
-        })
+        map((rawMoves: IPokeAPIMove[]) => this.mapRawMoves(rawMoves, pokemon))
       ).subscribe();
 
     return pokemon;
@@ -92,4 +75,30 @@ export class PokemonService {
   calculateStat(pokemon: Pokemon, base_stat: number) {
     return Math.floor((2 * base_stat) * pokemon.level / 100 + 5);
   }
-}
+
+  private mapRawPokemon(rawPokemon: IPokeAPIPokemon, pokemon: Pokemon) {
+    pokemon.level = 100;
+    pokemon.speed = this.calculateStat(pokemon, rawPokemon.stats.filter(stat => stat.stat.name === "speed")[0].base_stat);
+    this.setHP(pokemon, rawPokemon.stats.filter(stat => stat.stat.name === "hp")[0].base_stat);
+    pokemon.max_hp = pokemon.hp;
+    pokemon.sprites.front = rawPokemon.sprites.front_default;
+    pokemon.sprites.back = rawPokemon.sprites.back_default;
+  }
+
+  private getPokeAPIMoves(rawPokemon: IPokeAPIPokemon): Observable<any> {
+    let move_calls = [];
+    for (let move of rawPokemon.moves) {
+      move_calls.push(this.http.get<IPokeAPIMoveUrl>(move.move.url));
+    }
+
+    return forkJoin(move_calls);
+  }
+
+  private mapRawMoves(rawMoves: IPokeAPIMove[], pokemon: Pokemon) {
+    rawMoves.filter((move) => move.power !== null)
+      .sort(() => Math.random() - 0.5)
+      .map((move) => {
+        pokemon.moves.push(new Move(move.name, move.power))
+      });
+    }
+  }
