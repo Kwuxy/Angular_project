@@ -7,6 +7,7 @@ import {IPokeAPIMove} from "./pokeapi/IPokeAPIMove";
 import {map, mergeMap} from "rxjs/operators";
 import {forkJoin, Observable} from "rxjs";
 import {UtilsService} from "../utils/utils.service";
+import {isNumeric} from "tslint";
 
 @Injectable({
   providedIn: 'root'
@@ -48,6 +49,8 @@ export class PokemonService {
   }
 
   getPokemonFromPokeApi(name: string) : Pokemon {
+    if( ((name != null) && isNaN(Number(name))) ) { name = name.toLowerCase(); }
+
     let pokemon = new Pokemon('');
     this.http.get<IPokeAPIPokemon>(`https://pokeapi.co/api/v2/pokemon/${name}/`)
       .pipe(
@@ -55,7 +58,23 @@ export class PokemonService {
           this.mapRawPokemon(rawPokemon, pokemon);
           return this.getPokeAPIMoves(rawPokemon);
         }),
-        map((rawMoves: IPokeAPIMove[]) => this.mapRawMoves(rawMoves, pokemon))
+        map((rawMoves: IPokeAPIMove[]) => {
+          this.mapRawMoves(rawMoves, pokemon)
+        })
+      ).subscribe();
+
+    return pokemon;
+  }
+
+  getPokemonFromPokeApiWithoutMoves(name: string) : Pokemon {
+    if( ((name != null) && isNaN(Number(name))) ) { name = name.toLowerCase(); }
+
+    let pokemon = new Pokemon('');
+    this.http.get<IPokeAPIPokemon>(`https://pokeapi.co/api/v2/pokemon/${name}/`)
+      .pipe(
+        map((rawPokemon: IPokeAPIPokemon) => {
+          this.mapRawPokemon(rawPokemon, pokemon);
+        })
       ).subscribe();
 
     return pokemon;
@@ -108,11 +127,16 @@ export class PokemonService {
       });
   }
 
-  get10PokemonsFromAPI() {
+  getPokemonsFromAPI() {
     let pokemons = [];
-    for(let i = 1; i < 11; i++) {
-      let randomInt = this.utilsService.getRandomInt(807) + 1;
-      pokemons.push(this.getPokemonFromPokeApi(randomInt.toString()))
+    let ids = [];
+    for(let i = 1; i < 31; i++) {
+      let randomInt;
+      do {
+        randomInt = this.utilsService.getRandomInt(386) + 1;
+      } while(ids.includes(randomInt));
+      ids.push(randomInt);
+      pokemons.push(this.getPokemonFromPokeApiWithoutMoves(randomInt.toString()));
     }
 
     return pokemons;

@@ -13,6 +13,11 @@ import {Pokemon} from "../pokemon/pokemon";
 import {DatePipe, DecimalPipe} from "@angular/common";
 import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing";
 import {Test} from "tslint";
+import {PokemonSelectorComponent} from "../pokemon-selector/pokemon-selector.component";
+import {PokemonSelectorListComponent} from "../pokemon-selector-list/pokemon-selector-list.component";
+import {PokemonSelectorRowComponent} from "../pokemon-selector-row/pokemon-selector-row.component";
+import {PokemonSelectorTileComponent} from "../pokemon-selector-tile/pokemon-selector-tile.component";
+import {RouterOutlet} from "@angular/router";
 
 describe('BattleService', () => {
   let pokemonService: PokemonService;
@@ -30,7 +35,11 @@ describe('BattleService', () => {
       BattleComponent,
       LogColorDirective,
       HpBarComponent,
-      BattleArenaComponent
+      BattleArenaComponent,
+      PokemonSelectorComponent,
+      PokemonSelectorListComponent,
+      PokemonSelectorRowComponent,
+      PokemonSelectorTileComponent
     ],
     imports: [HttpClientTestingModule],
     providers: [ DatePipe, DecimalPipe ]

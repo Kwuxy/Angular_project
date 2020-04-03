@@ -1,0 +1,7 @@
+<div id="container">
+  <div *ngFor="let pokemon of pokemons" id="row">
+    <app-pokemon-selector-tile [pokemon]="pokemon"
+                               [selectedPokemonName]="selectedPokemonName"
+                               (onSelect)="onSelectPokemon($event)"></app-pokemon-selector-tile>
+  </div>
+</div>

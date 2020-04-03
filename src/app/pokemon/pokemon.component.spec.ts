@@ -3,13 +3,17 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { PokemonComponent } from './pokemon.component';
 import {AppComponent} from "../app.component";
 import {BattleComponent} from "../battle/battle.component";
-import {MoveComponent} from "../move/move.component";
 import {LogColorDirective} from "../battle/log-color.directive";
 import {PokemonInfoComponent} from "../pokemon-info/pokemon-info.component";
 import {HpBarComponent} from "../hp-bar/hp-bar.component";
 import {BattleArenaComponent} from "../battle-arena/battle-arena.component";
 import {PokemonService} from "./pokemon.service";
 import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing";
+import {RouterOutlet} from "@angular/router";
+import {PokemonSelectorComponent} from "../pokemon-selector/pokemon-selector.component";
+import {PokemonSelectorListComponent} from "../pokemon-selector-list/pokemon-selector-list.component";
+import {PokemonSelectorRowComponent} from "../pokemon-selector-row/pokemon-selector-row.component";
+import {PokemonSelectorTileComponent} from "../pokemon-selector-tile/pokemon-selector-tile.component";
 
 describe('PokemonComponent', () => {
   let component: PokemonComponent;
@@ -19,14 +23,16 @@ describe('PokemonComponent', () => {
 
   beforeEach(async(() => TestBed.configureTestingModule({
     declarations: [
-      AppComponent,
       PokemonComponent,
       PokemonInfoComponent,
       BattleComponent,
-      MoveComponent,
       LogColorDirective,
       HpBarComponent,
-      BattleArenaComponent
+      BattleArenaComponent,
+      PokemonSelectorComponent,
+      PokemonSelectorListComponent,
+      PokemonSelectorRowComponent,
+      PokemonSelectorTileComponent
     ],
     imports: [HttpClientTestingModule]
   })));

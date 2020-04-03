@@ -4,7 +4,6 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { PokemonComponent } from './pokemon/pokemon.component';
 import { BattleComponent } from './battle/battle.component';
-import { MoveComponent } from './move/move.component';
 import { LogColorDirective } from './battle/log-color.directive';
 import { PokemonInfoComponent } from './pokemon-info/pokemon-info.component';
 import { BattleArenaComponent } from './battle-arena/battle-arena.component';
@@ -18,6 +17,7 @@ import { PokemonSelectorComponent } from './pokemon-selector/pokemon-selector.co
 import {RouterModule, Routes} from "@angular/router";
 import { PokemonSelectorListComponent } from './pokemon-selector-list/pokemon-selector-list.component';
 import { PokemonSelectorTileComponent } from './pokemon-selector-tile/pokemon-selector-tile.component';
+import { PokemonSelectorRowComponent } from './pokemon-selector-row/pokemon-selector-row.component';
 
 const routes: Routes = [
   { path: '', component: PokemonSelectorComponent },
@@ -29,14 +29,14 @@ const routes: Routes = [
     AppComponent,
     PokemonComponent,
     BattleComponent,
-    MoveComponent,
     LogColorDirective,
     PokemonInfoComponent,
     BattleArenaComponent,
     HpBarComponent,
     PokemonSelectorComponent,
     PokemonSelectorListComponent,
-    PokemonSelectorTileComponent
+    PokemonSelectorTileComponent,
+    PokemonSelectorRowComponent
   ],
   imports: [
     BrowserModule,

@@ -3,7 +3,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BattleComponent } from './battle.component';
 import {AppComponent} from "../app.component";
 import {PokemonComponent} from "../pokemon/pokemon.component";
-import {MoveComponent} from "../move/move.component";
 import {Pokemon} from "../pokemon/pokemon";
 import {PokemonInfoComponent} from "../pokemon-info/pokemon-info.component";
 import {LogColorDirective} from "./log-color.directive";
@@ -11,8 +10,13 @@ import {HpBarComponent} from "../hp-bar/hp-bar.component";
 import {BattleArenaComponent} from "../battle-arena/battle-arena.component";
 import {PokemonService} from "../pokemon/pokemon.service";
 import {BattleService} from "./battle.service";
-import {DatePipe, DecimalPipe} from "@angular/common";
+import {APP_BASE_HREF, DatePipe, DecimalPipe} from "@angular/common";
 import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing";
+import {RouterModule, RouterOutlet, Routes} from "@angular/router";
+import {PokemonSelectorComponent} from "../pokemon-selector/pokemon-selector.component";
+import {PokemonSelectorListComponent} from "../pokemon-selector-list/pokemon-selector-list.component";
+import {PokemonSelectorRowComponent} from "../pokemon-selector-row/pokemon-selector-row.component";
+import {PokemonSelectorTileComponent} from "../pokemon-selector-tile/pokemon-selector-tile.component";
 
 describe('BattleComponent', () => {
   let battleComponent: BattleComponent;
@@ -25,6 +29,11 @@ describe('BattleComponent', () => {
   let milobellus: Pokemon;
   let gardevoir: Pokemon;
 
+  const routes: Routes = [
+    { path: '', component: PokemonSelectorComponent },
+    { path: 'battle/:selectedPokemonName/:secondPokemon',  component: BattleComponent },
+  ];
+
   beforeEach(async(() => TestBed.configureTestingModule({
     declarations: [
       PokemonComponent,
@@ -32,10 +41,14 @@ describe('BattleComponent', () => {
       BattleComponent,
       LogColorDirective,
       HpBarComponent,
-      BattleArenaComponent
+      BattleArenaComponent,
+      PokemonSelectorComponent,
+      PokemonSelectorListComponent,
+      PokemonSelectorRowComponent,
+      PokemonSelectorTileComponent
     ],
-    imports: [HttpClientTestingModule],
-    providers: [DatePipe, DecimalPipe]
+    imports: [HttpClientTestingModule, RouterModule.forRoot(routes)],
+    providers: [DatePipe, DecimalPipe, {provide: APP_BASE_HREF, useValue : '/' }]
   })));
 
   beforeEach(() => {

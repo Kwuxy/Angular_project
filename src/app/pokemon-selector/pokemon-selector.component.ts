@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {PokemonService} from "../pokemon/pokemon.service";
 import {Pokemon} from "../pokemon/pokemon";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-pokemon-selector',
@@ -9,12 +10,24 @@ import {Pokemon} from "../pokemon/pokemon";
 })
 export class PokemonSelectorComponent implements OnInit {
   pokemons: Pokemon[];
+  firstPokemonName: string;
+  secondPokemonName: string;
 
-  constructor(private pokemonService: PokemonService) { }
+  constructor(private pokemonService: PokemonService, private router: Router) { }
 
   ngOnInit(): void {
-    this.pokemons = this.pokemonService.get10PokemonsFromAPI();
-    console.log(this.pokemons);
+    this.pokemons = this.pokemonService.getPokemonsFromAPI();
   }
 
+  firstPokemonSelected(selectedPokemonName: string) {
+    this.firstPokemonName = selectedPokemonName;
+  }
+
+  secondPokemonSelected(selectedPokemonName: string) {
+    this.secondPokemonName = selectedPokemonName;
+  }
+
+  goToBattle() {
+    this.router.navigate([`./battle/${this.firstPokemonName}/${this.secondPokemonName}`])
+  }
 }

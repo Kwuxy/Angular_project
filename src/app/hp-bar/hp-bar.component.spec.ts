@@ -5,9 +5,13 @@ import {AppComponent} from "../app.component";
 import {PokemonComponent} from "../pokemon/pokemon.component";
 import {PokemonInfoComponent} from "../pokemon-info/pokemon-info.component";
 import {BattleComponent} from "../battle/battle.component";
-import {MoveComponent} from "../move/move.component";
 import {LogColorDirective} from "../battle/log-color.directive";
 import {BattleArenaComponent} from "../battle-arena/battle-arena.component";
+import {RouterOutlet} from "@angular/router";
+import {PokemonSelectorComponent} from "../pokemon-selector/pokemon-selector.component";
+import {PokemonSelectorListComponent} from "../pokemon-selector-list/pokemon-selector-list.component";
+import {PokemonSelectorRowComponent} from "../pokemon-selector-row/pokemon-selector-row.component";
+import {PokemonSelectorTileComponent} from "../pokemon-selector-tile/pokemon-selector-tile.component";
 
 describe('HpBarComponent', () => {
   let component: HpBarComponent;
@@ -16,13 +20,18 @@ describe('HpBarComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ AppComponent,
-        HpBarComponent,
-        BattleArenaComponent,
         PokemonComponent,
         PokemonInfoComponent,
         BattleComponent,
-        MoveComponent,
-        LogColorDirective ]
+        LogColorDirective,
+        HpBarComponent,
+        BattleArenaComponent,
+        PokemonSelectorComponent,
+        PokemonSelectorListComponent,
+        PokemonSelectorRowComponent,
+        PokemonSelectorTileComponent,
+        RouterOutlet
+      ]
     })
     .compileComponents();
   }));

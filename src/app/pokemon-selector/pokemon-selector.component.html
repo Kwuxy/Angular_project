@@ -1,3 +1,8 @@
 <p>pokemon-selector works!</p>
 
-<app-pokemon-selector-list [pokemons]="pokemons"></app-pokemon-selector-list>
+<div>
+  <app-pokemon-selector-list  [pokemons]="pokemons" (onSelect)="firstPokemonSelected($event)"></app-pokemon-selector-list>
+  <app-pokemon-selector-list  [pokemons]="pokemons" (onSelect)="secondPokemonSelected($event)"></app-pokemon-selector-list>
+</div>
+
+<button [disabled]="firstPokemonName === undefined || secondPokemonName === undefined" id="fightButton" (click)="goToBattle()">Let's fight !</button>
