@@ -1,13 +1,14 @@
 import {Pokemon} from '../pokemon/pokemon';
+import {UtilsService} from "../utils/utils.service";
 
 export class TurnOrder {
+  utilsService: UtilsService;
 
-  constructor(random = Math.random) {
-    this.random = random;
+  constructor(utilsService: UtilsService) {
+    this.utilsService = utilsService;
   }
-  random: any;
 
-  static xor_cheater(p1: Pokemon, p2: Pokemon): Pokemon | null {
+  xor_cheater(p1: Pokemon, p2: Pokemon): Pokemon | null {
     if (p1.cheater && !p2.cheater) {
       p1.cheated = true;
       return p1;
@@ -21,17 +22,13 @@ export class TurnOrder {
     return null;
   }
 
-  getRandomInt(max: number): number {
-    return Math.floor(this.random() * Math.floor(max));
-  }
-
   turn_order(p1: Pokemon, p2: Pokemon): Pokemon {
-    const cheater = TurnOrder.xor_cheater(p1, p2);
+    const cheater = this.xor_cheater(p1, p2);
 
     if (cheater !== null) { return cheater; }
 
     if (p1.speed === p2.speed) {
-      if (this.getRandomInt(2) === 0) {
+      if (this.utilsService.getRandomInt(2) === 0) {
         return p1;
       } else {
         return p2;

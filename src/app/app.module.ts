@@ -13,6 +13,7 @@ import {PokemonService} from "./pokemon/pokemon.service";
 import {BattleService} from "./battle/battle.service";
 import {DatePipe, DecimalPipe} from "@angular/common";
 import {HttpClientModule} from "@angular/common/http";
+import {UtilsService} from "./utils/utils.service";
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import {HttpClientModule} from "@angular/common/http";
     PokemonService,
     BattleService,
     DatePipe,
-    DecimalPipe
+    DecimalPipe,
+    UtilsService
   ],
   bootstrap: [AppComponent]
 })

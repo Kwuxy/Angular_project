@@ -1,4 +1,4 @@
-import {Input} from "@angular/core";
+import {Inject, Input} from "@angular/core";
 import {Pokemon} from "../pokemon/pokemon";
 import {Log} from "./log";
 import {TurnOrder} from "./turn-order";
@@ -10,7 +10,6 @@ export class Battle {
   intervalId;
   isPaused: boolean;
   isFinished: boolean;
-  turnOrder = new TurnOrder();
   firstAttacker: Pokemon | undefined;
   isBeginning: boolean;
   source: Observable<any>;
