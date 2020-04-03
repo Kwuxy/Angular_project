@@ -8,6 +8,7 @@ import {interval, Observable} from "rxjs";
 import {map, retry, takeWhile} from "rxjs/operators";
 import {TurnOrder} from "./turn-order";
 import {UtilsService} from "../utils/utils.service";
+import {Move} from "../move/move";
 
 @Injectable({
   providedIn: 'root'
@@ -46,18 +47,14 @@ export class BattleService {
       battle.firstAttacker = this.turnOrder.turn_order(battle.fighters[0], battle.fighters[1]);
       const secondPlayer = battle.fighters.filter(pokemon => pokemon !== battle.firstAttacker)[0];
       let move = battle.firstAttacker.moves[this.utilsService.getRandomInt(battle.firstAttacker.moves.length)];
-      let damages = this.pokemonService.attack(move, secondPlayer);
-      battle.actions.push(new Log(`${battle.firstAttacker.name} throw move ${move.name}
-      on ${secondPlayer.name} and deals ${this.decimalPipe.transform(damages, '1.1')} HP damages. ${battle.firstAttacker.cheated ? '(Cheater :-) )' : ''}`, battle.firstAttacker.color));
+      this.attackAndLog(battle, battle.firstAttacker, move, secondPlayer);
       if (!this.pokemonIsAlive(secondPlayer)) {
         return;
       }
     } else {
       const secondPlayer = battle.fighters.filter(pokemon => pokemon !== battle.firstAttacker)[0];
       let move = secondPlayer.moves[this.utilsService.getRandomInt(secondPlayer.moves.length)];
-      let damages = this.pokemonService.attack(move, battle.firstAttacker);
-      battle.actions.push(new Log(`${secondPlayer.name} throw move ${move.name}
-       on ${battle.firstAttacker.name} and deals ${this.decimalPipe.transform(damages, '1.1')} HP damages. ${secondPlayer.cheated ? '(Cheater :-) )' : ''}`, secondPlayer.color));
+      this.attackAndLog(battle, secondPlayer, move, battle.firstAttacker);
 
       this.resetPokemonCheat(battle.firstAttacker);
       this.resetPokemonCheat(secondPlayer);
@@ -92,5 +89,20 @@ export class BattleService {
   togglePause(battle: Battle) {
     battle.isBeginning = false;
     battle.isPaused = !battle.isPaused;
+  }
+
+  attackAndLog(battle: Battle, attacker: Pokemon, move: Move, target: Pokemon) {
+    let damages = this.pokemonService.attack(attacker, move, target);
+    let log: string;
+
+    if (damages !== 0) { // hits
+      log = `${attacker.name} throw move ${move.name}
+       on ${target.name} and deals ${this.decimalPipe.transform(damages, '1.1')} HP damages.
+       ${attacker.cheated ? '(Cheater :-) )' : ''}`;
+    } else { // miss
+      log = `${attacker.name} tries to throw move ${move.name} on ${target.name} but misses and deals no damages.`
+    }
+
+    battle.actions.push(new Log(log, attacker.color));
   }
 }

@@ -6,13 +6,14 @@ import {IPokeAPIMoveUrl, IPokeAPIPokemon} from "./pokeapi/IPokeAPIPokemon";
 import {IPokeAPIMove} from "./pokeapi/IPokeAPIMove";
 import {map, mergeMap} from "rxjs/operators";
 import {forkJoin, Observable} from "rxjs";
+import {UtilsService} from "../utils/utils.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class PokemonService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, public utilsService: UtilsService) { }
 
   createPokemonByName(name: string): Pokemon {
     let speed = 0;
@@ -47,7 +48,7 @@ export class PokemonService {
   }
 
   getPokemonFromPokeApi(name: string) : Pokemon {
-    let pokemon = new Pokemon(name.charAt(0).toUpperCase() + name.slice(1));
+    let pokemon = new Pokemon('');
     this.http.get<IPokeAPIPokemon>(`https://pokeapi.co/api/v2/pokemon/${name}/`)
       .pipe(
         mergeMap((rawPokemon: IPokeAPIPokemon) => {
@@ -60,7 +61,9 @@ export class PokemonService {
     return pokemon;
   }
 
-  attack(move: Move, target: Pokemon): number {
+  attack(attacker: Pokemon, move: Move, target: Pokemon): number {
+    if (!attacker.cheated && this.utilsService.getRandomInt(100) > move.accuracy) return 0;
+
     let damages = move.power;
     target.hp = target.hp - damages;
     if (target.hp < 0) { target.hp = 0; }
@@ -77,12 +80,14 @@ export class PokemonService {
   }
 
   private mapRawPokemon(rawPokemon: IPokeAPIPokemon, pokemon: Pokemon) {
+    pokemon.name = rawPokemon.name.charAt(0).toUpperCase() + rawPokemon.name.slice(1);
     pokemon.level = 100;
     pokemon.speed = this.calculateStat(pokemon, rawPokemon.stats.filter(stat => stat.stat.name === "speed")[0].base_stat);
     this.setHP(pokemon, rawPokemon.stats.filter(stat => stat.stat.name === "hp")[0].base_stat);
     pokemon.max_hp = pokemon.hp;
     pokemon.sprites.front = rawPokemon.sprites.front_default;
     pokemon.sprites.back = rawPokemon.sprites.back_default;
+    pokemon.color = this.utilsService.generateRandomColor();
   }
 
   private getPokeAPIMoves(rawPokemon: IPokeAPIPokemon): Observable<any> {
@@ -98,7 +103,18 @@ export class PokemonService {
     rawMoves.filter((move) => move.power !== null)
       .sort(() => Math.random() - 0.5)
       .map((move) => {
-        pokemon.moves.push(new Move(move.name, move.power))
+        if (move.accuracy === null) { move.accuracy = 100; }
+        pokemon.moves.push(new Move(move.name, move.power, move.accuracy));
       });
-    }
   }
+
+  get10PokemonsFromAPI() {
+    let pokemons = [];
+    for(let i = 1; i < 11; i++) {
+      let randomInt = this.utilsService.getRandomInt(807) + 1;
+      pokemons.push(this.getPokemonFromPokeApi(randomInt.toString()))
+    }
+
+    return pokemons;
+  }
+}

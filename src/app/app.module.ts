@@ -14,6 +14,15 @@ import {BattleService} from "./battle/battle.service";
 import {DatePipe, DecimalPipe} from "@angular/common";
 import {HttpClientModule} from "@angular/common/http";
 import {UtilsService} from "./utils/utils.service";
+import { PokemonSelectorComponent } from './pokemon-selector/pokemon-selector.component';
+import {RouterModule, Routes} from "@angular/router";
+import { PokemonSelectorListComponent } from './pokemon-selector-list/pokemon-selector-list.component';
+import { PokemonSelectorTileComponent } from './pokemon-selector-tile/pokemon-selector-tile.component';
+
+const routes: Routes = [
+  { path: '', component: PokemonSelectorComponent },
+  { path: 'battle/:firstPokemon/:secondPokemon',  component: BattleComponent },
+];
 
 @NgModule({
   declarations: [
@@ -24,11 +33,15 @@ import {UtilsService} from "./utils/utils.service";
     LogColorDirective,
     PokemonInfoComponent,
     BattleArenaComponent,
-    HpBarComponent
+    HpBarComponent,
+    PokemonSelectorComponent,
+    PokemonSelectorListComponent,
+    PokemonSelectorTileComponent
   ],
   imports: [
     BrowserModule,
-    HttpClientModule
+    HttpClientModule,
+    RouterModule.forRoot(routes)
   ],
   providers: [
     PokemonService,

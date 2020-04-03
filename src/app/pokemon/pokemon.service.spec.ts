@@ -27,12 +27,12 @@ describe('PokemonService', () => {
   });
 
   test('After the attack, gardervoir should have 53hp', () => {
-    service.attack(milobellus.moves[0], gardevoir);
+    service.attack(milobellus, milobellus.moves[0], gardevoir);
     expect(gardevoir.hp).toBe(53);
   });
 
   test('After the attack, milobellus should have 20hp', () => {
-    service.attack(gardevoir.moves[0], milobellus);
+    service.attack(milobellus, gardevoir.moves[0], milobellus);
     expect(milobellus.hp).toBe(20);
   });
 });

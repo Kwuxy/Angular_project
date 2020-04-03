@@ -3,6 +3,7 @@ import {Pokemon} from '../pokemon/pokemon';
 import {PokemonService} from "../pokemon/pokemon.service";
 import {Battle} from "./battle";
 import {BattleService} from "./battle.service";
+import {ActivatedRoute, Params} from "@angular/router";
 
 @Component({
   selector: 'app-battle',
@@ -17,11 +18,17 @@ export class BattleComponent implements OnInit {
   fighters: Pokemon[];
   battle: Battle;
   subscriber;
+  firstPokemonName: string;
+  secondPokemonName: string;
 
-  constructor(private pokemonService: PokemonService, private battleService: BattleService) { }
+  constructor(private pokemonService: PokemonService, private battleService: BattleService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.initialize();
+    this.route.params.subscribe((params: Params): void => {
+      this.firstPokemonName = params.firstPokemon;
+      this.secondPokemonName = params.secondPokemon;
+      this.initialize();
+    });
   }
 
   togglePause() {
@@ -46,12 +53,9 @@ export class BattleComponent implements OnInit {
   }
 
   initialize() {
-    // TODO: à injecter plus tard
     this.fighters = [
-      // this.pokemonProvider('milotic'),
-      // this.pokemonProvider('gardevoir')
-      this.pokemonService.getPokemonFromPokeApi('milotic'),
-      this.pokemonService.getPokemonFromPokeApi('gardevoir')
+      this.pokemonService.getPokemonFromPokeApi(this.firstPokemonName),
+      this.pokemonService.getPokemonFromPokeApi(this.secondPokemonName)
     ];
 
     this.battle = new Battle(this.fighters);

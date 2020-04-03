@@ -1,0 +1,5 @@
+<p>pokemon-selector-list works!</p>
+
+<div *ngFor="let pokemon of pokemons">
+  <app-pokemon-selector-tile [pokemon]="pokemon" [selectedPokemonName]="firstPokemon" (onSelect)="setFirstPokemon($event)"></app-pokemon-selector-tile>
+</div>
